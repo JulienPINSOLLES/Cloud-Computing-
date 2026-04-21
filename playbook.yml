@@ -1,0 +1,13 @@
+---
+- name: Installer le serveur Web
+  hosts: mon_serveur_web
+  become: yes # Passer en mode administrateur (sudo)
+  tasks:
+    - name: Mettre à jour la machine
+      apt:
+        update_cache: yes
+
+    - name: Installer Nginx (Serveur Web)
+      apt:
+        name: nginx
+        state: present
