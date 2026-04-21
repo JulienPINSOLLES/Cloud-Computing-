@@ -1,0 +1,5 @@
+all:
+  hosts:
+    mon_serveur_web:
+      ansible_host: 151.80.X.X # L'IP que Terraform va te donner
+      ansible_user: ubuntu
