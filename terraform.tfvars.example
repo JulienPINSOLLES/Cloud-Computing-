@@ -1,0 +1,11 @@
+aws_region         = "eu-west-3"
+project_name       = "tp-cloud"
+vpc_cidr           = "10.0.0.0/16"
+public_subnet_cidr = "10.0.1.0/24"
+availability_zone  = "eu-west-3a"
+instance_type      = "t3.micro"
+
+ssh_allowed_cidr = "0.0.0.0/0"
+
+# Nom d'une Key Pair déjà créée dans la région, laisser "" si non utilisée
+key_pair_name = ""
