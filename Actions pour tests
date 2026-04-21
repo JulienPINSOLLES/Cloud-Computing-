@@ -1,0 +1,7 @@
+Tape terraform init (pour préparer les outils).
+
+Tape terraform apply (pour construire l'infrastructure).
+
+Une fois fini, prends l'adresse IP de la machine et mets-la dans ton fichier Ansible.
+
+Tape ansible-playbook -i inventory.yml playbook.yml (pour installer le site web).
