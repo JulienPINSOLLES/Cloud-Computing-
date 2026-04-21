@@ -1,0 +1,42 @@
+# 1. On dit à Terraform d'utiliser OVH et OpenStack
+terraform {
+  required_providers {
+    ovh = { source = "ovh/ovh" }
+    openstack = { source = "terraform-provider-openstack/openstack" }
+  }
+}
+
+# 2. On crée le réseau (Le VPC de ton image)
+resource "ovh_cloud_project_network_private" "reseau_prive" {
+  service_name = "TON_ID_PROJET" # Ton ID projet OVH
+  name         = "mon-reseau"
+  regions      = ["GRA7"]      # Zone Gravelines (France)
+}
+
+# 3. On crée le sous-réseau (Le Subnet 10.0.1.0/24)
+resource "ovh_cloud_project_network_private_subnet" "sous_reseau" {
+  service_name = "TON_ID_PROJET"
+  network_id   = ovh_cloud_project_network_private.reseau_prive.id
+  region       = "GRA7"
+  network      = "10.0.1.0/24" # Comme sur ton image !
+}
+
+# 4. Le Pare-feu (Le Security Group : Ports 22 et 80)
+resource "openstack_compute_secgroup_v2" "securite" {
+  name        = "regles_web"
+  description = "Autorise SSH et HTTP"
+
+  rule { from_port = 22; to_port = 22; ip_protocol = "tcp"; cidr = "0.0.0.0/0" }
+  rule { from_port = 80; to_port = 80; ip_protocol = "tcp"; cidr = "0.0.0.0/0" }
+}
+
+# 5. La machine (L'Instance Ubuntu 22.04)
+resource "openstack_compute_instance_v2" "mon_serveur" {
+  name            = "web-server"
+  image_name      = "Ubuntu 22.04"
+  flavor_name     = "d2-2" # C'est la taille de la machine (équivalent t3.micro)
+  key_pair        = "ma-cle-ssh"
+  security_groups = [openstack_compute_secgroup_v2.securite.name]
+
+  network { name = "Ext-Net" } # Pour avoir internet
+}
